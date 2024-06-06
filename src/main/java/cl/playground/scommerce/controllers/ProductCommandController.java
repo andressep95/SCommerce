@@ -18,7 +18,7 @@ public class ProductCommandController {
         this.commandHandler = commandHandler;
     }
 
-    @PostMapping()
+    @PostMapping
     public void createProduct(@RequestBody CreateProductCommand command) {
         commandHandler.handle(command);
     }
@@ -30,7 +30,7 @@ public class ProductCommandController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Integer id,@RequestBody DeleteProductCommand command) {
+    public void deleteProduct(@PathVariable Integer id, @RequestBody DeleteProductCommand command) {
         command.setId(id);
         commandHandler.handle(command);
     }

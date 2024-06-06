@@ -3,10 +3,7 @@ package cl.playground.scommerce.controllers;
 import cl.playground.scommerce.dtos.ProductDTO;
 import cl.playground.scommerce.query.ProductQueryHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,20 +11,20 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 public class ProductQueryController {
 
-    private final ProductQueryHandler queryHandler;
+    private final ProductQueryHandler productQueryHandler;
 
     @Autowired
-    public ProductQueryController(ProductQueryHandler queryHandler) {
-        this.queryHandler = queryHandler;
+    public ProductQueryController(ProductQueryHandler productQueryHandler) {
+        this.productQueryHandler = productQueryHandler;
     }
 
     @GetMapping
     public List<ProductDTO> getAllProducts() {
-        return queryHandler.getAllProducts();
+        return productQueryHandler.getAllProducts();
     }
 
     @GetMapping("/{id}")
     public ProductDTO getProductById(@PathVariable Integer id) {
-        return queryHandler.getProductById(id);
+        return productQueryHandler.getProductById(id);
     }
 }
