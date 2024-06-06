@@ -1,55 +1,60 @@
+-- Eliminar vistas si existen
+DROP VIEW IF EXISTS cotizaciones_completas CASCADE;
+DROP VIEW IF EXISTS productos_con_cambios CASCADE;
+DROP VIEW IF EXISTS cotizaciones_con_cambios CASCADE;
+
 -- Crear las tablas
 CREATE TABLE IF NOT EXISTS products (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    price NUMERIC(10, 2)
+                                        id SERIAL PRIMARY KEY,
+                                        name VARCHAR(100),
+                                        price NUMERIC(10, 2)
 );
 
 CREATE TABLE IF NOT EXISTS quotations (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total NUMERIC(10, 2) DEFAULT 0
+                                          id SERIAL PRIMARY KEY,
+                                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                          total NUMERIC(10, 2) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS quotation_items (
-    quotation_id INT REFERENCES quotations(id),
-    product_id INT REFERENCES products(id),
-    quantity INT,
-    PRIMARY KEY (quotation_id, product_id)
+                                               id SERIAL PRIMARY KEY,
+                                               quotation_id INT REFERENCES quotations(id),
+                                               product_id INT REFERENCES products(id),
+                                               quantity INT
 );
 
 CREATE TABLE IF NOT EXISTS products_log (
-    id SERIAL PRIMARY KEY,
-    product_id INT REFERENCES products(id),
-    action VARCHAR(50),
-    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    old_name VARCHAR(100),
-    new_name VARCHAR(100),
-    old_price NUMERIC(10, 2),
-    new_price NUMERIC(10, 2)
+                                            id SERIAL PRIMARY KEY,
+                                            product_id INT REFERENCES products(id),
+                                            action VARCHAR(50),
+                                            action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                            old_name VARCHAR(100),
+                                            new_name VARCHAR(100),
+                                            old_price NUMERIC(10, 2),
+                                            new_price NUMERIC(10, 2)
 );
 
 CREATE TABLE IF NOT EXISTS quotations_log (
-    id SERIAL PRIMARY KEY,
-    quotation_id INT REFERENCES quotations(id),
-    action VARCHAR(50),
-    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    old_total NUMERIC(10, 2),
-    new_total NUMERIC(10, 2)
+                                              id SERIAL PRIMARY KEY,
+                                              quotation_id INT REFERENCES quotations(id),
+                                              action VARCHAR(50),
+                                              action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                              old_total NUMERIC(10, 2),
+                                              new_total NUMERIC(10, 2)
 );
 
 -- Crear función para calcular el total
 CREATE OR REPLACE FUNCTION calculate_total() RETURNS TRIGGER AS $$
 BEGIN
-UPDATE quotations
-SET total = (
-    SELECT SUM(p.price * qi.quantity)
-    FROM quotation_items qi
-             JOIN products p ON qi.product_id = p.id
-    WHERE qi.quotation_id = NEW.quotation_id
-)
-WHERE id = NEW.quotation_id;
-RETURN NEW;
+    UPDATE quotations
+    SET total = (
+        SELECT SUM(p.price * qi.quantity)
+        FROM quotation_items qi
+                 JOIN products p ON qi.product_id = p.id
+        WHERE qi.quotation_id = NEW.quotation_id
+    )
+    WHERE id = NEW.quotation_id;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -57,7 +62,7 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_calculate_total ON quotation_items;
 CREATE TRIGGER trg_calculate_total
     AFTER INSERT OR UPDATE ON quotation_items
-                        FOR EACH ROW EXECUTE FUNCTION calculate_total();
+    FOR EACH ROW EXECUTE FUNCTION calculate_total();
 
 -- Crear función para registrar cambios en productos
 CREATE OR REPLACE FUNCTION log_product_changes() RETURNS TRIGGER AS $$
@@ -71,8 +76,8 @@ BEGIN
     ELSIF TG_OP = 'INSERT' THEN
         INSERT INTO products_log (product_id, action, new_name, new_price)
         VALUES (NEW.id, 'INSERT', NEW.name, NEW.price);
-END IF;
-RETURN NEW;
+    END IF;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -94,8 +99,8 @@ BEGIN
     ELSIF TG_OP = 'INSERT' THEN
         INSERT INTO quotations_log (quotation_id, action, new_total)
         VALUES (NEW.id, 'INSERT', NEW.total);
-END IF;
-RETURN NEW;
+    END IF;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -105,7 +110,7 @@ CREATE TRIGGER trg_log_quotation_changes
     AFTER INSERT OR UPDATE OR DELETE ON quotations
     FOR EACH ROW EXECUTE FUNCTION log_quotation_changes();
 
--- Vista para Cotizaciones Completas
+-- Crear vistas después de modificar las tablas
 CREATE VIEW cotizaciones_completas AS
 SELECT
     q.id AS cotizacion_id,
@@ -117,12 +122,9 @@ SELECT
     qi.quantity AS cantidad
 FROM
     quotations q
-        JOIN
-    quotation_items qi ON q.id = qi.quotation_id
-        JOIN
-    products p ON qi.product_id = p.id;
+        JOIN quotation_items qi ON q.id = qi.quotation_id
+        JOIN products p ON qi.product_id = p.id;
 
--- Vista para Productos con Cambios
 CREATE VIEW productos_con_cambios AS
 SELECT
     pl.id,
@@ -136,7 +138,6 @@ SELECT
 FROM
     products_log pl;
 
--- Vista para Cotizaciones con Cambios
 CREATE VIEW cotizaciones_con_cambios AS
 SELECT
     ql.id,
