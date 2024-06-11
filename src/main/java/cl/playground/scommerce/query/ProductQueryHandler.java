@@ -2,7 +2,6 @@ package cl.playground.scommerce.query;
 
 import cl.playground.scommerce.dtos.ProductDTO;
 import cl.playground.scommerce.services.ProductQueryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
 public class ProductQueryHandler {
     private final ProductQueryService productQueryService;
 
-    @Autowired
     public ProductQueryHandler(ProductQueryService productQueryService) {
         this.productQueryService = productQueryService;
     }

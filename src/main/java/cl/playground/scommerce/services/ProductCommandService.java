@@ -5,7 +5,6 @@ import cl.playground.scommerce.commands.UpdateProductCommand;
 import cl.playground.scommerce.commands.DeleteProductCommand;
 import cl.playground.scommerce.entities.Product;
 import cl.playground.scommerce.repositories.IProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,7 +14,6 @@ public class ProductCommandService {
 
     private final IProductRepository productRepository;
 
-    @Autowired
     public ProductCommandService(IProductRepository productRepository) {
         this.productRepository = productRepository;
     }
