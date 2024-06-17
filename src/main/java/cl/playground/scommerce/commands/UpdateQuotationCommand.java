@@ -1,15 +1,15 @@
 package cl.playground.scommerce.commands;
 
-import cl.playground.scommerce.entities.QuotationItem;
 import java.util.List;
 
 public class UpdateQuotationCommand {
+
     private int id;
-    private List<QuotationItem> items;
+    private List<CreateQuotationItemCommand> items;
 
     public UpdateQuotationCommand() {}
 
-    public UpdateQuotationCommand(int id, List<QuotationItem> items) {
+    public UpdateQuotationCommand(int id, List<CreateQuotationItemCommand> items) {
         this.id = id;
         this.items = items;
     }
@@ -22,11 +22,11 @@ public class UpdateQuotationCommand {
         this.id = id;
     }
 
-    public List<QuotationItem> getItems() {
+    public List<CreateQuotationItemCommand> getItems() {
         return items;
     }
 
-    public void setItems(List<QuotationItem> items) {
+    public void setItems(List<CreateQuotationItemCommand> items) {
         this.items = items;
     }
 }

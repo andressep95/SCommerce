@@ -1,23 +1,22 @@
 package cl.playground.scommerce.commands;
 
-import cl.playground.scommerce.entities.QuotationItem;
-
 import java.util.List;
 
 public class CreateQuotationCommand {
-    private List<QuotationItem> items;
+
+    private List<CreateQuotationItemCommand> items;
 
     public CreateQuotationCommand() {}
 
-    public CreateQuotationCommand(List<QuotationItem> items) {
+    public CreateQuotationCommand(List<CreateQuotationItemCommand> items) {
         this.items = items;
     }
 
-    public List<QuotationItem> getItems() {
+    public List<CreateQuotationItemCommand> getItems() {
         return items;
     }
 
-    public void setItems(List<QuotationItem> items) {
+    public void setItems(List<CreateQuotationItemCommand> items) {
         this.items = items;
     }
 }
