@@ -5,8 +5,9 @@ import cl.playground.scommerce.entities.Product;
 import cl.playground.scommerce.exceptions.ProductExceptionNotFound;
 import cl.playground.scommerce.mappers.ProductMapper;
 import cl.playground.scommerce.repositories.IProductRepository;
-import org.springframework.stereotype.Service;
+
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,4 @@ public class ProductQueryService {
         return product.map(productMapper::mapToDTO)
         .orElseThrow(() -> new ProductExceptionNotFound("Product not found"));
     }
-
-
 }

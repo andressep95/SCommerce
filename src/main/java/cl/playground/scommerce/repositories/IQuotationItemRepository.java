@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IQuotationItemRepository extends JpaRepository<QuotationItem, Integer> {
+    void deleteByQuotationId(int quotationId);
 }
