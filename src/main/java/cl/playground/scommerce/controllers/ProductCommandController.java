@@ -4,7 +4,6 @@ import cl.playground.scommerce.commands.CreateProductCommand;
 import cl.playground.scommerce.commands.DeleteProductCommand;
 import cl.playground.scommerce.commands.UpdateProductCommand;
 import cl.playground.scommerce.handlers.ProductCommandHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +12,6 @@ public class ProductCommandController {
 
     private final ProductCommandHandler commandHandler;
 
-    @Autowired
     public ProductCommandController(ProductCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
     }

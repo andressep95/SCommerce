@@ -2,18 +2,22 @@ package cl.playground.scommerce.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "quotations")
-public class Quotation {
+public class Quotation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Timestamp createdAt;
     private double total;
+    @JsonIgnoreProperties(value = {"hibernateInitializer"})
     @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL)
     private List<QuotationItem> items;
 

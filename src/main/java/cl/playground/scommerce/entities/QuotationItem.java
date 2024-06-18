@@ -1,14 +1,19 @@
 package cl.playground.scommerce.entities;
 
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "quotation_items")
-public class QuotationItem {
+public class QuotationItem implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
     @ManyToOne
     @JoinColumn(name = "quotation_id")
     private Quotation quotation;
