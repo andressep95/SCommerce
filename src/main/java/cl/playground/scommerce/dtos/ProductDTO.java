@@ -1,6 +1,8 @@
 package cl.playground.scommerce.dtos;
 
-public class ProductDTO {
+import java.io.Serializable;
+
+public class ProductDTO implements Serializable {
     private Integer id;
     private String name;
     private Double price;
