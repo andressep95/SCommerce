@@ -20,20 +20,22 @@ public class ProductCommandService {
 
     public void createProduct(CreateProductCommand command) {
         Product product = new Product(command.getName(), command.getPrice());
-        productRepository.save(product);
+        productRepository.createProduct(product.getName(), product.getPrice());
     }
 
     public void updateProduct(UpdateProductCommand command) {
         Optional<Product> optionalProduct = productRepository.findById(command.getId());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
+            product.setId(command.getId());
             product.setName(command.getName());
             product.setPrice(command.getPrice());
-            productRepository.save(product);
+            productRepository.updateProduct(product.getId(), product.getName(), product.getPrice());
         }
     }
 
     public void deleteProduct(DeleteProductCommand command) {
-        productRepository.deleteById(command.getId());
+
+        productRepository.deleteProduct(command.getId());
     }
 }
