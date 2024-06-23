@@ -55,7 +55,6 @@ public class QuotationCommandService {
             }
         }
 
-        // No se requiere actualizar el total de la cotización manualmente porque se calcula en la base de datos
     }
 
     public void updateQuotation(UpdateQuotationCommand command) {
@@ -80,7 +79,6 @@ public class QuotationCommandService {
                 }
             }
 
-            // No se requiere actualizar el total de la cotización manualmente porque se calcula en la base de datos
         } else {
             throw new RuntimeException("Quotation not found");
         }
