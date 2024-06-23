@@ -12,7 +12,6 @@ import cl.playground.scommerce.repositories.IQuotationItemRepository;
 import cl.playground.scommerce.repositories.IQuotationRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @Service
@@ -29,10 +28,20 @@ public class QuotationCommandService {
     }
 
     public void createQuotation(CreateQuotationCommand command) {
-        Quotation quotation = new Quotation();
-        quotation.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        quotationRepository.save(quotation);
+        // Insertar la cotización y obtener el ID generado
+        Integer quotationId = quotationRepository.createQuotation();
+        if (quotationId == null) {
+            throw new RuntimeException("Failed to create quotation");
+        }
 
+        // Obtener la cotización recién creada
+        Optional<Quotation> optionalQuotation = quotationRepository.findQuotationById(quotationId);
+        if (optionalQuotation.isEmpty()) {
+            throw new RuntimeException("Quotation not found after creation");
+        }
+        Quotation quotation = optionalQuotation.get();
+
+        // Guardar los ítems de la cotización
         for (CreateQuotationItemCommand itemCommand : command.getItems()) {
             Optional<Product> product = productRepository.findById(itemCommand.getProductId());
             if (product.isPresent()) {
@@ -41,18 +50,16 @@ public class QuotationCommandService {
                 quotationItem.setProduct(product.get());
                 quotationItem.setQuantity(itemCommand.getQuantity());
                 quotationItemRepository.save(quotationItem);
-
             } else {
                 throw new RuntimeException("Product not found");
             }
         }
 
-        // Actualizar el total de la cotización
-        quotationRepository.save(quotation);
+        // No se requiere actualizar el total de la cotización manualmente porque se calcula en la base de datos
     }
 
     public void updateQuotation(UpdateQuotationCommand command) {
-        Optional<Quotation> optionalQuotation = quotationRepository.findById(command.getId());
+        Optional<Quotation> optionalQuotation = quotationRepository.findQuotationById(command.getId());
         if (optionalQuotation.isPresent()) {
             Quotation quotation = optionalQuotation.get();
 
@@ -68,14 +75,12 @@ public class QuotationCommandService {
                     quotationItem.setProduct(product.get());
                     quotationItem.setQuantity(itemCommand.getQuantity());
                     quotationItemRepository.save(quotationItem);
-
                 } else {
                     throw new RuntimeException("Product not found");
                 }
             }
 
-            // Actualizar el total de la cotización
-            quotationRepository.save(quotation);
+            // No se requiere actualizar el total de la cotización manualmente porque se calcula en la base de datos
         } else {
             throw new RuntimeException("Quotation not found");
         }
