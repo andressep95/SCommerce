@@ -25,14 +25,14 @@ public class QuotationQueryService {
 
     @Cacheable(value = "quotations")
     public List<QuotationDTO> getAllQuotations() {
-        return ((List<Quotation>) quotationRepository.findAll()).stream()
+        return quotationRepository.findAllQuotations().stream()
                 .map(quotationMapper::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     @Cacheable(value = "quotations", key = "#id")
     public QuotationDTO getQuotationById(Integer id) {
-        Optional<Quotation> quotation = quotationRepository.findById(id);
+        Optional<Quotation> quotation = quotationRepository.findQuotationById(id);
         return quotation.map(quotationMapper::mapToDTO)
                 .orElseThrow(() -> new QuotationExceptionNotFound("Quotation not found"));
     }

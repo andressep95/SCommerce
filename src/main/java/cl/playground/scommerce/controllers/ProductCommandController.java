@@ -4,6 +4,11 @@ import cl.playground.scommerce.commands.CreateProductCommand;
 import cl.playground.scommerce.commands.DeleteProductCommand;
 import cl.playground.scommerce.commands.UpdateProductCommand;
 import cl.playground.scommerce.handlers.ProductCommandHandler;
+import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,19 +22,32 @@ public class ProductCommandController {
     }
 
     @PostMapping
-    public void createProduct(@RequestBody CreateProductCommand command) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody CreateProductCommand command, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
         commandHandler.handle(command);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public void updateProduct(@PathVariable Integer id, @RequestBody UpdateProductCommand command) {
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @Valid @RequestBody UpdateProductCommand command, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
+
         command.setId(id);
         commandHandler.handle(command);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Integer id, @RequestBody DeleteProductCommand command) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer id, @Valid @RequestBody DeleteProductCommand command, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
         command.setId(id);
         commandHandler.handle(command);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

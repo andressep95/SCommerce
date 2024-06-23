@@ -2,6 +2,9 @@ package cl.playground.scommerce.controllers;
 
 import cl.playground.scommerce.dtos.ProductDTO;
 import cl.playground.scommerce.query.ProductQueryHandler;
+import jakarta.validation.constraints.Min;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +20,14 @@ public class ProductQueryController {
     }
 
     @GetMapping
-    public List<ProductDTO> getAllProducts() {
-        return productQueryHandler.getAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productQueryHandler.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
-    public ProductDTO getProductById(@PathVariable Integer id) {
-        return productQueryHandler.getProductById(id);
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable @Min(1) Integer id) {
+        ProductDTO product = productQueryHandler.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 }
