@@ -26,14 +26,14 @@ public class ProductQueryService {
 
     @Cacheable(value = "products")
     public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream()
+        return productRepository.findAllProducts().stream()
         .map(productMapper::mapToDTO)
         .collect(Collectors.toList());
     }
 
     @Cacheable(value = "products", key = "#id")
     public ProductDTO getProductById(Integer id) {
-        Optional<Product> product = productRepository.findById(id);
+        Optional<Product> product = productRepository.findProductById(id);
         return product.map(productMapper::mapToDTO)
         .orElseThrow(() -> new ProductExceptionNotFound("Product not found"));
     }
