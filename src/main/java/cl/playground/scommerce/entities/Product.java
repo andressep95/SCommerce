@@ -21,6 +21,12 @@ public class Product implements Serializable {
         this.price = price;
     }
 
+    public Product(Integer id, String name, Double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     // getters y setters
     public Integer getId() {
         return id;

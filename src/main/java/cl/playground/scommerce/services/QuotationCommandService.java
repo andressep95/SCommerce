@@ -7,7 +7,7 @@ import cl.playground.scommerce.commands.UpdateQuotationCommand;
 import cl.playground.scommerce.entities.Product;
 import cl.playground.scommerce.entities.Quotation;
 import cl.playground.scommerce.entities.QuotationItem;
-import cl.playground.scommerce.exceptions.ProductExceptionNotFound;
+import cl.playground.scommerce.exceptions.ProductNotFoundException;
 import cl.playground.scommerce.exceptions.QuotationExceptionNotFound;
 import cl.playground.scommerce.repositories.IProductRepository;
 import cl.playground.scommerce.repositories.IQuotationItemRepository;
@@ -62,7 +62,7 @@ public class QuotationCommandService {
                             quotationItem.getProduct().getId(),
                             quotationItem.getQuantity());
                 } else {
-                    throw new ProductExceptionNotFound("Product with ID " + itemCommand.getProductId() + " not found");
+                    throw new ProductNotFoundException("Product with ID " + itemCommand.getProductId() + " not found");
                 }
             }
         } catch (RuntimeException e) {
@@ -95,7 +95,7 @@ public class QuotationCommandService {
                                 quotationItem.getProduct().getId(),
                                 quotationItem.getQuantity());
                     } else {
-                        throw new ProductExceptionNotFound("Product with ID " + itemCommand.getProductId() + " not found");
+                        throw new ProductNotFoundException("Product with ID " + itemCommand.getProductId() + " not found");
                     }
                 }
             } else {

@@ -2,7 +2,7 @@ package cl.playground.scommerce.services;
 
 import cl.playground.scommerce.dtos.ProductDTO;
 import cl.playground.scommerce.entities.Product;
-import cl.playground.scommerce.exceptions.ProductExceptionNotFound;
+import cl.playground.scommerce.exceptions.ProductNotFoundException;
 import cl.playground.scommerce.mappers.ProductMapper;
 import cl.playground.scommerce.repositories.IProductRepository;
 
@@ -35,6 +35,6 @@ public class ProductQueryService {
     public ProductDTO getProductById(Integer id) {
         Optional<Product> product = productRepository.findProductById(id);
         return product.map(productMapper::mapToDTO)
-        .orElseThrow(() -> new ProductExceptionNotFound("Product not found"));
+        .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 }

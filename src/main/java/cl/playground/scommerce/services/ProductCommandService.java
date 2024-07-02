@@ -4,12 +4,14 @@ import cl.playground.scommerce.commands.CreateProductCommand;
 import cl.playground.scommerce.commands.DeleteProductCommand;
 import cl.playground.scommerce.commands.UpdateProductCommand;
 import cl.playground.scommerce.entities.Product;
-import cl.playground.scommerce.exceptions.ProductExceptionNotFound;
+import cl.playground.scommerce.exceptions.DatabaseException;
+import cl.playground.scommerce.exceptions.DuplicateProductException;
+import cl.playground.scommerce.exceptions.InvalidProductException;
+import cl.playground.scommerce.exceptions.ProductNotFoundException;
 import cl.playground.scommerce.repositories.IProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,47 +25,63 @@ public class ProductCommandService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public void createProduct(CreateProductCommand command) {
+        if (command.getName() == null || command.getName().isEmpty()) {
+            throw new InvalidProductException("Product name cannot be null or empty");
+        }
+        if (command.getPrice() <= 0) {
+            throw new InvalidProductException("Product price must be greater than 0");
+        }
+        if (productRepository.findProductByName(command.getName()).isPresent()) {
+            throw new DuplicateProductException("Product already exists with name: " + command.getName());
+        }
         try {
-            Product product = new Product(command.getName(), command.getPrice());
-            productRepository.createProduct(product.getName(), product.getPrice());
+            productRepository.createProduct(command.getName(), command.getPrice());
         } catch (RuntimeException e) {
             logger.log(Level.SEVERE, "Unexpected error creating product with name: " + command.getName(), e);
-            throw new RuntimeException("Error creating product with name: " + command.getName(), e);
+            throw new DatabaseException("Error creating product with name: " + command.getName());
         }
     }
 
     @Transactional
     public void updateProduct(UpdateProductCommand command) {
+        if (command.getName() == null || command.getName().isEmpty()) {
+            throw new InvalidProductException("Product name cannot be null or empty");
+        }
+        if (command.getPrice() <= 0) {
+            throw new InvalidProductException("Product price must be greater than 0");
+        }
+        if (command.getId() < 1) {
+            throw new InvalidProductException("Product ID cannot be null");
+        }
+        Product product = productRepository.findProductById(command.getId())
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + command.getId() + " not found"));
+
+        product.setName(command.getName());
+        product.setPrice(command.getPrice());
         try {
-            Optional<Product> optionalProduct = productRepository.findById(command.getId());
-            if (optionalProduct.isPresent()) {
-                Product product = optionalProduct.get();
-                product.setId(command.getId());
-                product.setName(command.getName());
-                product.setPrice(command.getPrice());
-                productRepository.updateProduct(product.getId(), product.getName(), product.getPrice());
-            } else {
-                throw new ProductExceptionNotFound("Product with ID " + command.getId() + " not found");
-            }
-        } catch (ProductExceptionNotFound e) {
+            productRepository.updateProduct(product.getId(), product.getName(), product.getPrice());
+        } catch (DatabaseException e) {
             logger.log(Level.WARNING, "Error updating product with ID: " + command.getId(), e);
-            throw new ProductExceptionNotFound("Error updating product with ID: " + command.getId());
+            throw new DatabaseException("Error updating product with ID: " + command.getId());
         }
     }
 
     @Transactional
     public void deleteProduct(DeleteProductCommand command) {
+        Product product = productRepository.findProductById(command.getId())
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + command.getId() + " not found"));
         try {
-            Optional<Product> optionalProduct = productRepository.findById(command.getId());
-            if (optionalProduct.isPresent()) {
-                productRepository.deleteProduct(command.getId());
-            } else {
-                throw new ProductExceptionNotFound("Product with ID " + command.getId() + " not found");
-            }
-        } catch (ProductExceptionNotFound e) {
+            productRepository.deleteProduct(product.getId());
+        } catch (DatabaseException e) {
             logger.log(Level.WARNING, "Error deleting product with ID: " + command.getId(), e);
-            throw new ProductExceptionNotFound("Error deleting product with ID: " + command.getId());
+            throw new DatabaseException("Error deleting product with ID: " + command.getId());
         }
+    }
+
+    // utilizar un object o los tipos de datos en especificos de los campos a validar.
+    private void validationProduct() {
+
     }
 }
