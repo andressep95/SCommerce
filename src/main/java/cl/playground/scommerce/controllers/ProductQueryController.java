@@ -20,8 +20,9 @@ public class ProductQueryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productQueryHandler.getAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "1") Integer page,
+                                                           @RequestParam(defaultValue = "10") Integer size) {
+        List<ProductDTO> products = productQueryHandler.getAllProducts(page, size);
         return ResponseEntity.ok(products);
     }
 

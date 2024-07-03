@@ -16,11 +16,15 @@ public class NativeProductRepository implements IProductRepository {
         this.dataSource = dataSource;
     }
 
-    public List<Product> findAllProducts() {
-        String sql = "SELECT * FROM products";
+    @Override
+    public List<Product> findAllProducts(int page, int size) {
+        String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, size);
+            ps.setInt(2, size * (page - 1));
+            ResultSet rs = ps.executeQuery();
 
             List<Product> products = new ArrayList<>();
             while (rs.next()) {

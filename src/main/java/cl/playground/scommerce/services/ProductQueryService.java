@@ -25,10 +25,10 @@ public class ProductQueryService {
     }
 
     @Cacheable(value = "products")
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.findAllProducts().stream()
-        .map(productMapper::mapToDTO)
-        .collect(Collectors.toList());
+    public List<ProductDTO> getAllProducts(int page, int size) {
+        return productRepository.findAllProducts(page, size).stream()
+                .map(productMapper::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Cacheable(value = "products", key = "#id")

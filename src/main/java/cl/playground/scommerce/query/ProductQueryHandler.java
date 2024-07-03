@@ -14,8 +14,8 @@ public class ProductQueryHandler {
         this.productQueryService = productQueryService;
     }
 
-    public List<ProductDTO> getAllProducts() {
-        return productQueryService.getAllProducts();
+    public List<ProductDTO> getAllProducts(int page, int size) {
+        return productQueryService.getAllProducts(page, size);
     }
 
     public ProductDTO getProductById(Integer id) {

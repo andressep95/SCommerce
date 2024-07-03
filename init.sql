@@ -49,7 +49,23 @@ INSERT INTO products (name, price) VALUES
                                        ('Producto B', 15.50),
                                        ('Producto C', 20.00),
                                        ('Producto D', 25.00),
-                                       ('Producto E', 30.00);
+                                       ('Producto E', 30.00),
+                                       ('Producto F', 35.00),
+                                       ('Producto G', 40.00),
+                                       ('Producto H', 45.00),
+                                       ('Producto I', 50.00),
+                                       ('Producto J', 55.00),
+                                       ('Producto K', 60.00),
+                                       ('Producto L', 65.00),
+                                       ('Producto M', 70.00),
+                                       ('Producto N', 75.00),
+                                       ('Producto O', 80.00),
+                                       ('Producto P', 85.00),
+                                       ('Producto Q', 90.00),
+                                       ('Producto R', 95.00),
+                                       ('Producto S', 100.00),
+                                       ('Producto T', 105.00);
+
 
 -- Insertar cotizaciones
 INSERT INTO quotations DEFAULT VALUES; -- Cotización 1
