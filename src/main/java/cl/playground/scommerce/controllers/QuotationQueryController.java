@@ -18,8 +18,8 @@ public class QuotationQueryController {
     }
 
     @GetMapping
-    public List<QuotationDTO> getAllQuotations() {
-        return queryHandler.getAllQuotations();
+    public List<QuotationDTO> getAllQuotations(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        return queryHandler.getAllQuotations(page, size);
     }
 
     @GetMapping("/{id}")

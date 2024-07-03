@@ -24,8 +24,8 @@ public class QuotationQueryService {
     }
 
     @Cacheable(value = "quotations")
-    public List<QuotationDTO> getAllQuotations() {
-        return quotationRepository.findAllQuotations().stream()
+    public List<QuotationDTO> getAllQuotations(int page, int size) {
+        return quotationRepository.findAllQuotations(page, size).stream()
                 .map(quotationMapper::mapToDTO)
                 .collect(Collectors.toList());
     }

@@ -22,19 +22,23 @@ public class NativeQuotationRepository implements IQuotationRepository {
     }
 
     @Override
-    public List<Quotation> findAllQuotations() {
-        String sql = "SELECT * FROM quotations";
+    public List<Quotation> findAllQuotations(int page, int size) {
+        String sql = "SELECT * FROM quotations LIMIT ? OFFSET ?";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            List<Quotation> quotations = new ArrayList<>();
-            while (rs.next()) {
-                Quotation quotation = mapRowToQuotation(rs);
-                quotation.setItems(nativeQuotationItemRepository.findItemsByQuotationId(quotation.getId()));
-                quotations.add(quotation);
+            ps.setInt(1, size);
+            ps.setInt(2, size * (page - 1));
+
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Quotation> quotations = new ArrayList<>();
+                while (rs.next()) {
+                    Quotation quotation = mapRowToQuotation(rs);
+                    quotation.setItems(nativeQuotationItemRepository.findItemsByQuotationId(quotation.getId()));
+                    quotations.add(quotation);
+                }
+                return quotations;
             }
-            return quotations;
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving all quotations");
         }

@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface IQuotationRepository {
 
-    List<Quotation> findAllQuotations();
+    List<Quotation> findAllQuotations(int page, int size);
 
     Optional<Quotation> findQuotationById(Integer id);
 

@@ -15,8 +15,8 @@ public class QuotationQueryHandler {
         this.quotationQueryService = quotationQueryService;
     }
 
-    public List<QuotationDTO> getAllQuotations() {
-        return quotationQueryService.getAllQuotations();
+    public List<QuotationDTO> getAllQuotations(int page, int size) {
+        return quotationQueryService.getAllQuotations(page, size);
     }
 
     public Optional<QuotationDTO> getQuotationById(Integer id) {
