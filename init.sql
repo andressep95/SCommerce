@@ -133,6 +133,7 @@ CREATE TRIGGER trg_log_quotation_changes_delete
     FOR EACH ROW EXECUTE FUNCTION log_quotation_changes_delete();
 
 -- Insertar productos
+/*
 INSERT INTO products (name, price) VALUES
                                        ('Producto A', 10.00),
                                        ('Producto B', 15.50),
@@ -219,7 +220,7 @@ INSERT INTO quotation_items (quotation_id, product_id, quantity) VALUES
                                                                      (19, 13, 3),-- Cotización 19, Producto 13, Cantidad 3
                                                                      (20, 14, 2),-- Cotización 20, Producto 14, Cantidad 2
                                                                      (20, 15, 2);-- Cotización 20, Producto 15, Cantidad 2
-
+*/
 -- Crear vistas después de modificar las tablas
 CREATE VIEW cotizaciones_completas AS
 SELECT
